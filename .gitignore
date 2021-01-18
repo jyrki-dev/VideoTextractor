@@ -146,3 +146,4 @@ dmypy.json
 
 # Personal additions
 data/
+.vim/
