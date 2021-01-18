@@ -4,8 +4,10 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
-pylama = "*"
 pytest = "*"
+pylama = "*"
+mypy = {editable = true, git = "git://github.com/python/mypy.git", ref = "master"}
+yapf = "*"
 
 [packages]
 numpy = "*"
