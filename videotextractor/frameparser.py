@@ -73,7 +73,6 @@ def save_images(dir_path: str, frames: list) -> int:
         return 0
 
 
-
 def quicksave(video_path: str, stop: int) -> None:
     """Exract frames from a video file and save them to a directory.
 
