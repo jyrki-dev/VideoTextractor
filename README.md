@@ -28,5 +28,4 @@ Scan a video file at defined frame or timespan for text.
   intended.
 - Attempt to follow Python packaging conventions, so the package can possibly later
   be published and easily deployed.
-- Later try rewriting in Rust/C++/other more efficient and optimised language as
-  exercise.
+
