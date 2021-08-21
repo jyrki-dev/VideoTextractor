@@ -7,19 +7,18 @@ of the capture process, wether to write the frames to the disk as image files,
 where to store them and in which format.
 
 TODO:
-    - Rework to work without decord
     - Instead of writing the frames as image files, implement a version
     of the function that keeps the frames in-memory for faster
-    processing.
-    - Implement the faster method for sets with lower interval
+    processing (Like keep the images in an array)
 """
 import os
+import sys
 import cv2
 
 
 def extract_frames(
     video_path: str, start: int = 0, stop: int = -1, interval: int = 1
-) -> int:
+) -> tuple:
     """Extract frames from a video source using VideoReader
 
     Args:
@@ -29,31 +28,71 @@ def extract_frames(
         interval: Seconds how far between each saved frame is
 
     Returns:
-        Int of how many images were saved.
+        Tuple, containing the path to the directory and count of
+        frames extracted.
     """
-    # TODO: Frame based selection, proper error handling
     if not os.path.exists(video_path):
-        raise FileNotFoundError(f"Unable to find {video_path}!")
+        raise FileNotFoundError(f"File '{video_path}' not found.")
     img_count = 0
     video_dir, video_name = os.path.split(video_path)
-    frames_dir = f"{video_dir}/frames_{video_name}"
-    os.makedirs(frames_dir, exist_ok=True)
+    frames_dir = f"{video_dir}/frames_{video_name[:-4]}"
+    os.makedirs(frames_dir, exist_ok=False)
     cap = cv2.VideoCapture(video_path)
+    fps = cap.get(cv2.CAP_PROP_FPS)
     if stop <= start:
-        stop = cap.get(cv2.CAP_PROP_FRAME_COUNT) // cap.get(cv2.CAP_PROP_FPS)
+        stop = cap.get(cv2.CAP_PROP_FRAME_COUNT) // fps
     for sec in range(start, stop, interval):
-        cap.set(cv2.CAP_PROP_POS_MSEC, (sec * 1000))
+        cap.set(cv2.CAP_PROP_POS_FRAMES, (sec * 25))
         ret, frame = cap.read()
         if not ret:
-            print(
-                f"Failed to retrieve frame at {sec:.1f} seconds"
-            )  # Replace with proper raise Exception
-            continue
-        cv2.imwrite(f"{frames_dir}/{video_name}{sec}.jpg", frame)
+            raise cv2.error(f"Failed to retrieve frame at {sec * 25:.1f} sec.")
+        cv2.imwrite(f"{frames_dir}/{sec}.jpg", frame)
         img_count += 1
-    return img_count
+    return (frames_dir, img_count)
+
+
+def save_images(dir_path: str, frames: list) -> int:
+    """Takes an array of images and saves them to a directory.
+
+    Args:
+        dir_path (str): Path to the directory where to save the images.
+        frames (list): List of cv2 frame captures.
+
+    Returns:
+        int: Count of images saved.
+    """
+    try:
+        os.makedirs(dir_path, exists_ok=False)
+        count = 1
+        for img in frames:
+            cv2.imwrite(f"{dir_path}/{count}.jpg", img)
+            count += 1
+        return count
+    except FileExistsError as e:
+        print(f"Error in creating the frame directory: {e}")
+        return 0
+
+
+
+def quicksave(video_path: str, stop: int) -> None:
+    """Exract frames from a video file and save them to a directory.
+
+    Wrapper for extract_frames with less arguments to pass.
+
+    Args:
+        video_path (str): Path to the video file.
+        stop (int): Time (in seconds) where to stop extracting sceenshots.
+    """
+    try:
+        dir_path, img_count = extract_frames(video_path, 1, stop, 1)
+        print(f"Succesfully retrieved {img_count} frames to {dir_path}!")
+    except FileNotFoundError as e:
+        print(f'Error in the video file: {e}')
+    except FileExistsError as e:
+        print(f'Error in creating the frame directory: {e}')
+    except cv2.error as e:
+        print(f"Frame extraction error: {e}")
 
 
 if __name__ == '__main__':
-    n_frames = extract_frames('data/ANP1090.mp4', 0, 15, 1)
-    print(f"Extracted and saved {n_frames} from the video file.")
+    quicksave(sys.argv[1], int(sys.argv[2]))
