@@ -5,6 +5,9 @@
 Contains parameters for the located directory, video name, fps, possible
 new name, and basic methods like get, set and in addition method to
 rename the current file.
+
+TODO:
+    - Create methods for handling changes directly in the filesystem.
 """
 import os
 
@@ -20,17 +23,25 @@ class Video:
         """
         self.directory = dir
         self.name = name
-        self.new_name = ""
+        self.new_name = name
 
 
     @classmethod
-    def frompath(self, path: str):
+    def frompath(cls, path: str):
         video_dir, file_name = os.path.split(path)
         """Initialize a Video class from just a file path."""
-        return self(video_dir, file_name)
+        return cls(video_dir, file_name)
 
-    def set_new_name(cls, new_name: str):
-        cls.new_name = new_name
+    def __str__(self):
+        return f"Video file: {self.name}\n \
+                 Directory: {self.directory}\n \
+                 Proposed name: {self.new_name}"
+
+    def __repr__(self):
+        return f"Video(name={self.name}, directory={self.directory}, new name = {self.new_name}"
+
+    def set_new_name(self, new_name: str):
+        self.new_name = new_name
 
     def rename(self):
         self.name = self.new_name
