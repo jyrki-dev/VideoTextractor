@@ -147,5 +147,6 @@ dmypy.json
 # Personal additions
 videotextractor/data
 
+**/.vim/
 **/.vscode
 **/.DS_Store
