@@ -11,20 +11,22 @@ TODO:
 """
 import os
 
+from numpy import ndarray
+
 
 class Video:
     """Class for a video file."""
-    def __init__(self, dir: str, name: str) -> None:
+    def __init__(self, directory: str, name: str) -> None:
         """Initialize a new Video object.
 
         Args:
             dir (str): Directory where the file can be found.
             name (str): Filename of the video file.
         """
-        self.directory = dir
+        self.directory = directory
         self.name = name
         self.new_name = name
-
+        self.frames = []  # Store here for for easy access?
 
     @classmethod
     def frompath(cls, path: str):
@@ -38,7 +40,8 @@ class Video:
                  Proposed name: {self.new_name}"
 
     def __repr__(self):
-        return f"Video(name={self.name}, directory={self.directory}, new name = {self.new_name}"
+        return (f"Video(name={self.name}, directory={self.directory} ,"
+                f"new name = {self.new_name}")
 
     def set_new_name(self, new_name: str):
         self.new_name = new_name

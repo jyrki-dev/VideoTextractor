@@ -9,13 +9,14 @@ where to store them and in which format.
 """
 import os
 import sys
+
 import cv2
-import numpy as np
+from numpy import ndarray
 
 
 def extract_frames(
     video_source: cv2.VideoCapture, start: int, stop: int, interval: int
-) -> list[np.ndarray]:
+) -> list[ndarray]:
     """Extract frames from a video source and return them as ndarrays stored in
     a list.
 
@@ -26,7 +27,7 @@ def extract_frames(
         interval (int): Seconds how far between each saved frame is
 
     Returns:
-        List of frames stored as np.ndarrays.
+        List of frames stored as ndarrays.
     """
     frames = []
     fps = video_source.get(cv2.CAP_PROP_FPS)
@@ -41,8 +42,8 @@ def extract_frames(
     return frames
 
 
-def save_images(dir_path: str, frames: list[np.ndarray]) -> bool:
-    """Takes a list of images in np.ndarray format and saves them to a directory,
+def save_images(dir_path: str, frames: list[ndarray]) -> bool:
+    """Takes a list of images in ndarray format and saves them to a directory,
     creating the directory if necessary.
 
     Args:

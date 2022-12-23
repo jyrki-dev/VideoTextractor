@@ -6,6 +6,7 @@ name = "pypi"
 [packages]
 numpy = "*"
 opencv-python = "*"
+pylint = "*"
 
 [dev-packages]
 pytest = "*"
@@ -14,6 +15,16 @@ mypy = "*"
 black = "*"
 autopep8 = "*"
 flake8 = "*"
+pylint = "*"
+pylama = "*"
+flake8-quotes = "*"
+flake8-executable = "*"
+flake8-fixme = "*"
+flake8-multiline-containers = "*"
+flake8-variables-names = "*"
+flakehell = "*"
+flake8-annotations = "*"
+isort = "*"
 
 [requires]
 python_version = "3.9"
